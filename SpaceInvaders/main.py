@@ -34,16 +34,16 @@ class Collider(games.Sprite):
 class PlayerArtillery(Collider):
     """Гаубица игрока"""
     image = games.load_image("player_artillery.bmp")
-    STEP = games.screen.fps/10
+    STEP = games.screen.fps / 10
     STARTING_HP = 3
-    MISSILE_DELAY = games.screen.fps/2
+    MISSILE_DELAY = games.screen.fps / 2
 
     def __init__(self, game):
         """Управление гаубицей игрока"""
         super(PlayerArtillery, self).__init__(image=PlayerArtillery.image, x=games.screen.width / 2
                                               , bottom=games.screen.height)
         self.game = game
-        self.hit_points =self.STARTING_HP-1
+        self.hit_points = self.STARTING_HP - 1
         self.missile_delay = self.MISSILE_DELAY
 
     def update(self):
@@ -68,17 +68,9 @@ class PlayerArtillery(Collider):
                 games.screen.add(new_missile)
                 self.missile_delay = self.MISSILE_DELAY
 
-     #   # Debug:
-    #    if games.keyboard.is_pressed(games.K_r):
-   #         self.hit_points += 1
-  #      if games.keyboard.is_pressed(games.K_f):
- #           self.hit_points += 1
-  #      if self.hit_points <= 0:
- #           self.die()
-
     def been_hit(self):
         self.hit_points -= 1
-        self.game.hit_points_bar.value = "HP: "+str(self.hit_points)
+        self.game.hit_points_bar.value = "HP: " + str(self.hit_points)
         if self.hit_points <= 0:
             self.die()
 
@@ -87,14 +79,13 @@ class PlayerArtillery(Collider):
         self.game.game_over()
 
 
-
 class EnemyShip(Collider):
     """Корабли противников"""
     image = games.load_image("eship.bmp")
     Y_STEP = 25
     flying_right = True
     total = 0
-    SPEED_INC = games.screen.fps/300
+    SPEED_INC = games.screen.fps / 300
     speed = 0
     MISSILE_DELAY = games.screen.fps
 
@@ -106,7 +97,7 @@ class EnemyShip(Collider):
             self.dx = -EnemyShip.speed
         super(EnemyShip, self).__init__(image=EnemyShip.image, left=left, top=top)
         EnemyShip.total += 1
-        self.missile_delay = random.randrange(EnemyShip.MISSILE_DELAY, EnemyShip.MISSILE_DELAY*(1+EnemyShip.total))
+        self.missile_delay = random.randrange(EnemyShip.MISSILE_DELAY, EnemyShip.MISSILE_DELAY * (1 + EnemyShip.total))
 
     def update(self):
         """Задаёт поведение кораблей противника"""
@@ -144,7 +135,7 @@ class EnemyShip(Collider):
         if self.missile_delay == 0:
             new_enemy_missile = EnemyMissile(self.x, self.bottom)
             games.screen.add(new_enemy_missile)
-            self.missile_delay = random.randrange(self.MISSILE_DELAY, self.MISSILE_DELAY*(1+EnemyShip.total))
+            self.missile_delay = random.randrange(self.MISSILE_DELAY, self.MISSILE_DELAY * (1 + EnemyShip.total))
 
     def change_direction(self):
         """Меняет направление движение корабля и сдвигает его вниз"""
@@ -169,7 +160,7 @@ class EnemyMissile(Collider):
 
     def __init__(self, ship_x, ship_y):
         super(EnemyMissile, self).__init__(image=EnemyMissile.image, x=ship_x, top=ship_y + 2
-                                            , dy=self.VELOCITY)
+                                           , dy=self.VELOCITY)
 
     def update(self):
         super(EnemyMissile, self).update()
@@ -186,12 +177,10 @@ class EnemyMissile(Collider):
                     self.die()
 
 
-
 class PlayerMissile(Collider):
     """Класс, задающий снаряды, выпускаемые игроком"""
     image = games.load_image("pmissile.bmp")
-    VELOCITY = games.screen.fps/8
-    #RELOAD_TIME = 30
+    VELOCITY = games.screen.fps / 8
 
     def __init__(self, player_x):
         super(PlayerMissile, self).__init__(image=PlayerMissile.image, x=player_x, y=games.screen.height - 60
@@ -214,7 +203,7 @@ class PlayerMissile(Collider):
 
 class Game:
     """Основной класс, отвечает за запуск и основные процессы игры"""
-    BASE_ENEMY_SPEED = games.screen.fps/30
+    BASE_ENEMY_SPEED = games.screen.fps / 30
     BUFFER_X = 50
     BUFFER_Y = 30
     START_X = 50
@@ -227,7 +216,7 @@ class Game:
         self.level = 0
         self.player = PlayerArtillery(game=self)
         games.screen.add(self.player)
-        # create hit points bar
+        # отобразить здоровье
         self.hit_points_bar = games.Text(value="HP: " + str(self.player.hit_points),
                                          size=30,
                                          color=color.white,
@@ -256,7 +245,7 @@ class Game:
         EnemyShip.flying_right = True  # Меняет направление движения вражеских кораблей на Вправо
         EnemyShip.speed = self.BASE_ENEMY_SPEED  # Устанавливает начальную скорость движения вражеских кораблей
 
-        self.player.hit_points += 1  # Прибиавляет игроку 1 жизнь
+        self.player.hit_points += 1  # Прибавляет игроку 1 жизнь
         self.hit_points_bar.value = "HP: " + str(self.player.hit_points)
         # Уничтожает снаряды
         for object in gc.get_objects():
