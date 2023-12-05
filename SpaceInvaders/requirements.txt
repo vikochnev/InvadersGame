@@ -1,1 +1,3 @@
-SuperWires~=0.9.6
+SuperWires
+pip
+pygame
